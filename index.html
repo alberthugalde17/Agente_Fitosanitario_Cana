@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<title>Agente Fitosanitario de la Caña — Costa Rica</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gridjs@5.0.2/dist/theme/mermaid.min.css" integrity="sha384-jZvDSsmGB9oGGT/4l9bHXGoAv1OxvG/cFmSo0dZaSqmBgvQTKDBFAMftlXTmMbNW" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/gridjs@5.0.2/dist/gridjs.umd.js" integrity="sha384-/XXDzxe4FsGiAe50i/u9pY/Vy/uX654MHB1xoc1BJNnH1WXHhqHga9g3q5tF4gj7" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.js" integrity="sha384-iU8HYtnGQ8Cy4zl7gbNMOhsDTTKX02BTXptVP/vqAWIaTfM7isw76iyZCsjL2eVi" crossorigin="anonymous"></script>
+<style>
+  :root {
+    color-scheme: light;
+    /* Color tokens */
+    --bg:#f1f7f2; --card:#ffffff; --ink:#1e3932; --ink-2:#3d5a4e; --muted:#5a7a6a;
+    --line:#cee0d2; --soft-line:#e4efe6; --accent:#006241; --accent-deep:#003e2a;
+    --p-high:#e8a8a8; --p-high-bg:#fceaea; --p-high-ink:#8a2e2e;
+    --p-med:#f0c97a;  --p-med-bg:#faecc8;  --p-med-ink:#7a5520;
+    --p-low:#b8d4b0;  --p-low-bg:#e4efe0;  --p-low-ink:#3a5e30;
+    --p-min:#a4c8a8;  --p-min-bg:#dbeadd;  --p-min-ink:#2d5238;
+    --p-sky:#b8d8d0; --p-rose:#e8c4c4; --p-butter:#f0e8c0; --p-sage:#b8d4b0;
+    /* Spacing 4/8 system */
+    --sp-1:4px; --sp-2:8px; --sp-3:12px; --sp-4:16px; --sp-5:20px; --sp-6:24px; --sp-8:32px; --sp-10:40px;
+    /* Type scale */
+    --t-xs:11px; --t-sm:12px; --t-base:14px; --t-md:15px; --t-lg:17px; --t-xl:20px; --t-2xl:24px; --t-3xl:30px;
+    /* Radius */
+    --r-sm:6px; --r-md:10px; --r-lg:14px; --r-xl:18px;
+    /* Elevation */
+    --el-0:none;
+    --el-1:0 1px 2px rgba(30,57,50,0.04), 0 1px 1px rgba(30,57,50,0.03);
+    --el-2:0 4px 12px rgba(30,57,50,0.06), 0 2px 4px rgba(30,57,50,0.04);
+    --el-3:0 12px 32px rgba(30,57,50,0.10), 0 4px 12px rgba(30,57,50,0.06);
+    /* Motion */
+    --ease-out:cubic-bezier(0.22,1,0.36,1);
+    --ease-in-out:cubic-bezier(0.65,0,0.35,1);
+    --dur-fast:120ms; --dur:200ms; --dur-slow:280ms;
+    /* Focus */
+    --focus-ring:0 0 0 3px rgba(0,98,65,0.25);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+  }
+
+  /* Tabular figures para datos numéricos */
+  .tabular { font-variant-numeric: tabular-nums; font-feature-settings: "tnum"; }
+
+  /* Animaciones */
+  @keyframes fadeIn { from { opacity:0; transform:translateY(4px); } to { opacity:1; transform:none; } }
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(232,168,168,0.5); }
+    50%      { box-shadow: 0 0 0 10px rgba(232,168,168,0); }
+  }
+  .anim-in { animation: fadeIn var(--dur-slow) var(--ease-out) both; }
+  .pulse-high { animation: pulse 2s ease-out infinite; }
+
+  /* Focus visible accesible */
+  *:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+    border-radius: 4px;
+  }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; background:var(--bg); color:var(--ink); line-height:1.5; -webkit-font-smoothing:antialiased; }
+  .wrap { max-width:1200px; margin:0 auto; padding:var(--sp-8) var(--sp-5) 80px; }
+  header { display:flex; align-items:flex-end; justify-content:space-between; flex-wrap:wrap; gap:var(--sp-3); border-bottom:1px solid var(--line); padding-bottom:var(--sp-4); margin-bottom:var(--sp-5); }
+  header .brand { display:flex; align-items:center; gap:var(--sp-3); }
+  header .brand-icon { width:42px; height:42px; border-radius:12px; background:linear-gradient(135deg, var(--accent) 0%, var(--accent-deep) 100%); display:flex; align-items:center; justify-content:center; box-shadow:var(--el-2); flex-shrink:0; }
+  header .brand-icon svg { width:24px; height:24px; }
+  h1 { margin:0 0 2px; font-size:var(--t-2xl); color:var(--accent-deep); letter-spacing:-0.4px; font-weight:700; }
+  .sub { color:var(--muted); font-size:var(--t-sm); }
+  .header-status { display:flex; align-items:center; gap:var(--sp-2); font-size:var(--t-sm); color:var(--muted); padding:var(--sp-2) var(--sp-3); background:var(--card); border:1px solid var(--line); border-radius:999px; box-shadow:var(--el-1); }
+  .status-dot { width:8px; height:8px; border-radius:50%; background:var(--accent); animation:pulse 2.4s ease-out infinite; }
+
+  .data-bar { background:var(--p-min-bg); border:1px solid var(--p-min); border-radius:var(--r-md); padding:var(--sp-3) var(--sp-4); margin-bottom:var(--sp-5); font-size:var(--t-base); color:var(--p-min-ink); display:flex; align-items:center; gap:var(--sp-2); }
+  .data-bar code { background:#fff; padding:1px 6px; border-radius:4px; font-size:var(--t-sm); color:var(--accent-deep); font-family:ui-monospace,SFMono-Regular,Menlo,monospace; }
+
+  .top-grid { display:grid; grid-template-columns:1.15fr 1fr; gap:var(--sp-4); margin-bottom:var(--sp-6); }
+  .map-panel, .summary-panel { background:var(--card); border:1px solid var(--line); border-radius:var(--r-lg); padding:var(--sp-5); box-shadow:var(--el-1); transition:box-shadow var(--dur) var(--ease-out); }
+  .map-panel:hover, .summary-panel:hover { box-shadow:var(--el-2); }
+  .panel-title { margin:0 0 var(--sp-3); font-size:var(--t-md); color:var(--accent-deep); font-weight:700; display:flex; justify-content:space-between; align-items:center; gap:var(--sp-2); }
+  .panel-title .hint { font-size:var(--t-xs); color:var(--muted); font-weight:500; }
+  .map-wrap { position:relative; background:#e8f0ea; border-radius:var(--r-md); overflow:hidden; }
+  .map-wrap svg { width:100%; height:auto; display:block; }
+  .finca-dot { cursor:pointer; transition:transform var(--dur) var(--ease-out); transform-box:fill-box; transform-origin:center; }
+  .finca-dot:hover { transform:scale(1.18); }
+  .finca-dot.active circle.dot-bg { stroke:var(--accent-deep); stroke-width:3.5; }
+  .finca-dot.active circle.dot-ring { opacity:1; }
+  .finca-dot circle.dot-ring { opacity:0; transition:opacity var(--dur) var(--ease-out); fill:none; stroke:var(--accent-deep); stroke-width:1.5; stroke-dasharray:3 3; }
+  .finca-label { pointer-events:none; font-size:11.5px; font-weight:600; fill:var(--ink); text-shadow:0 0 3px #fff,0 0 3px #fff,0 0 3px #fff; }
+  .map-legend { display:flex; gap:var(--sp-3); flex-wrap:wrap; font-size:var(--t-xs); color:var(--muted); margin-top:var(--sp-3); padding-top:var(--sp-3); border-top:1px dashed var(--soft-line); }
+  .map-legend .lg { display:flex; align-items:center; gap:var(--sp-1); }
+  .map-legend .lg .swatch { width:12px; height:12px; border-radius:50%; border:1.5px solid #fff; box-shadow:0 0 0 1px rgba(0,0,0,0.12); }
+
+  .summary-zone-name { font-size:var(--t-2xl); color:var(--accent-deep); margin:var(--sp-1) 0 2px; font-weight:700; letter-spacing:-0.3px; }
+  .summary-coords { font-size:var(--t-sm); color:var(--muted); margin-bottom:var(--sp-3); display:flex; align-items:center; gap:var(--sp-1); }
+  .summary-coords svg { width:13px; height:13px; opacity:0.7; }
+  .summary-line { background:linear-gradient(135deg, var(--p-butter) 0%, #f6efd5 100%); border-radius:var(--r-md); padding:var(--sp-3) var(--sp-4); font-size:var(--t-base); margin-bottom:var(--sp-4); line-height:1.55; border-left:3px solid var(--accent); }
+  .summary-line strong { color:var(--accent-deep); }
+  .quick-metrics { display:grid; grid-template-columns:1fr 1fr; gap:var(--sp-2); }
+  .qm { background:linear-gradient(180deg, var(--bg) 0%, #ebf3ed 100%); border:1px solid var(--soft-line); border-radius:var(--r-md); padding:var(--sp-3); transition:transform var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out); }
+  .qm:hover { transform:translateY(-1px); box-shadow:var(--el-1); }
+  .qm .qm-head { display:flex; align-items:center; gap:6px; margin-bottom:2px; }
+  .qm .qm-head svg { width:14px; height:14px; color:var(--accent); opacity:0.7; }
+  .qm .lbl { font-size:var(--t-xs); color:var(--muted); text-transform:uppercase; letter-spacing:0.6px; font-weight:600; }
+  .qm .val { font-size:var(--t-xl); font-weight:700; color:var(--ink); font-variant-numeric:tabular-nums; letter-spacing:-0.3px; }
+  .qm .val .unit { font-size:var(--t-sm); color:var(--muted); font-weight:500; margin-left:1px; }
+
+  .grid-diseases { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:var(--sp-3); margin-bottom:var(--sp-6); }
+  .disease-card { background:var(--card); border-radius:var(--r-lg); border:1px solid var(--line); padding:var(--sp-4) var(--sp-5); position:relative; overflow:hidden; box-shadow:var(--el-1); transition:transform var(--dur) var(--ease-out), box-shadow var(--dur) var(--ease-out); }
+  .disease-card:hover { transform:translateY(-2px); box-shadow:var(--el-2); }
+  .disease-card::before { content:""; position:absolute; top:0; left:0; width:5px; height:100%; background:var(--risk-color,var(--p-min)); }
+  .disease-card .card-head { display:flex; justify-content:space-between; align-items:flex-start; gap:var(--sp-2); }
+  .disease-card h3 { margin:0 0 2px; font-size:var(--t-md); color:var(--ink); font-weight:700; }
+  .disease-card .sci { font-style:italic; font-size:var(--t-xs); color:var(--muted); margin-bottom:var(--sp-3); }
+  .disease-card .score-num { font-size:var(--t-3xl); font-weight:800; color:var(--accent-deep); font-variant-numeric:tabular-nums; line-height:1; letter-spacing:-1px; }
+  .disease-card .score-num .of { font-size:var(--t-sm); color:var(--muted); font-weight:500; }
+  .risk-badge { display:inline-block; padding:3px 10px; border-radius:999px; font-size:var(--t-xs); font-weight:700; color:var(--accent-deep); background:var(--risk-color,var(--p-min)); text-transform:uppercase; letter-spacing:0.5px; }
+  .risk-meter { height:8px; background:var(--soft-line); border-radius:4px; overflow:hidden; margin:var(--sp-3) 0 var(--sp-2); position:relative; }
+  .risk-meter > div { height:100%; background:var(--risk-color,var(--p-min)); transition:width var(--dur-slow) var(--ease-out); border-radius:4px; }
+  .risk-meter .threshold-marks { position:absolute; top:0; left:0; right:0; height:100%; pointer-events:none; }
+  .risk-meter .threshold-marks span { position:absolute; top:0; width:1px; height:100%; background:rgba(30,57,50,0.15); }
+  .disease-card .why { font-size:var(--t-xs); color:var(--muted); margin-top:var(--sp-2); line-height:1.45; }
+
+  .data-panels { display:grid; grid-template-columns:1fr 1fr; gap:var(--sp-4); margin-bottom:var(--sp-6); }
+  .data-panels .panel { background:var(--card); border:1px solid var(--line); border-radius:var(--r-lg); padding:var(--sp-5); box-shadow:var(--el-1); }
+  .panel-h { margin:0 0 var(--sp-3); font-size:var(--t-base); color:var(--accent-deep); padding-bottom:var(--sp-2); border-bottom:1px solid var(--soft-line); display:flex; justify-content:space-between; align-items:center; font-weight:700; }
+  .source-tag { font-size:var(--t-xs); color:var(--accent-deep); background:var(--p-sage); padding:3px 9px; border-radius:999px; font-weight:700; letter-spacing:0.4px; }
+  .metric-row { display:flex; justify-content:space-between; align-items:center; padding:var(--sp-2) 0; font-size:var(--t-base); border-bottom:1px dashed var(--soft-line); }
+  .metric-row:last-child { border:none; }
+  .metric-row span:first-child { color:var(--muted); }
+  .metric-row span:last-child { font-weight:600; color:var(--ink); font-variant-numeric:tabular-nums; }
+
+  .section-card { background:var(--card); border:1px solid var(--line); border-radius:var(--r-lg); padding:var(--sp-5); margin-bottom:var(--sp-6); box-shadow:var(--el-1); }
+  .section-card h2 { margin:0 0 var(--sp-3); font-size:var(--t-md); color:var(--accent-deep); font-weight:700; display:flex; align-items:center; gap:var(--sp-2); }
+  .alert { display:flex; gap:var(--sp-3); align-items:flex-start; padding:var(--sp-3) var(--sp-4); border-radius:var(--r-md); margin-bottom:var(--sp-2); font-size:var(--t-base); border-left:4px solid; transition:transform var(--dur-fast) var(--ease-out); }
+  .alert:hover { transform:translateX(2px); }
+  .alert.high { background:var(--p-high-bg); border-color:var(--p-high); }
+  .alert.med  { background:var(--p-med-bg);  border-color:var(--p-med); }
+  .alert.low  { background:var(--p-low-bg);  border-color:var(--p-low); }
+  .alert .icon { width:22px; text-align:center; flex-shrink:0; font-size:16px; }
+  .alert .body { flex:1; line-height:1.5; }
+  .alert .body b { display:block; margin-bottom:2px; color:var(--ink); }
+
+  .reports-header { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:var(--sp-3); margin-bottom:var(--sp-3); }
+  .reports-filters { display:flex; gap:var(--sp-2); flex-wrap:wrap; }
+  .pill { background:var(--bg); border:1px solid var(--line); border-radius:999px; padding:6px 14px; font-size:var(--t-sm); color:var(--muted); cursor:pointer; transition:all var(--dur-fast) var(--ease-out); font-weight:500; min-height:32px; display:inline-flex; align-items:center; }
+  .pill:hover { border-color:var(--accent); color:var(--accent-deep); background:#fff; transform:translateY(-1px); }
+  .pill.active { background:var(--accent); border-color:var(--accent); color:#fff; font-weight:600; box-shadow:var(--el-1); }
+  .reports-summary { display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:var(--sp-2); margin-bottom:var(--sp-4); }
+  .stat { background:linear-gradient(180deg, var(--bg) 0%, #ebf3ed 100%); border:1px solid var(--soft-line); border-radius:var(--r-md); padding:var(--sp-3); text-align:center; transition:transform var(--dur-fast) var(--ease-out); }
+  .stat:hover { transform:translateY(-2px); box-shadow:var(--el-1); }
+  .stat .num { font-size:var(--t-2xl); font-weight:800; color:var(--accent-deep); font-variant-numeric:tabular-nums; letter-spacing:-0.5px; line-height:1.1; }
+  .stat .lbl { font-size:var(--t-xs); color:var(--muted); text-transform:uppercase; letter-spacing:0.4px; font-weight:600; margin-top:2px; }
+
+  .gridjs-wrapper { box-shadow:none !important; border:1px solid var(--soft-line) !important; border-radius:10px !important; }
+  .gridjs-table { font-size:12.5px !important; }
+  .gridjs-th { background:var(--p-butter) !important; color:var(--accent-deep) !important; font-weight:700 !important; border-bottom:1px solid var(--p-med) !important; }
+  .gridjs-td { color:var(--ink) !important; }
+  .gridjs-tr:hover .gridjs-td { background:var(--bg) !important; }
+  .gridjs-search-input { background:var(--bg) !important; border:1px solid var(--line) !important; border-radius:6px !important; }
+  .gridjs-pagination button { background:var(--bg) !important; border:1px solid var(--line) !important; color:var(--ink) !important; }
+  .gridjs-pagination button.gridjs-currentPage { background:var(--p-sage) !important; color:var(--accent-deep) !important; }
+  .sev-pill { display:inline-flex; align-items:center; gap:5px; padding:3px 9px; border-radius:999px; font-size:var(--t-xs); font-weight:600; line-height:1; }
+  .sev-pill .sev-dot { width:7px; height:7px; border-radius:50%; display:inline-block; }
+  .sev-pill.alta { background:var(--p-high-bg); color:var(--p-high-ink); }
+  .sev-pill.alta .sev-dot { background:#c8372d; }
+  .sev-pill.media { background:var(--p-med-bg); color:var(--p-med-ink); }
+  .sev-pill.media .sev-dot { background:#e89a1f; }
+  .sev-pill.baja { background:var(--p-low-bg); color:var(--p-low-ink); }
+  .sev-pill.baja .sev-dot { background:#4a8b2e; }
+  .sev-pill.ninguna { background:var(--bg); color:var(--muted); }
+  .sev-pill.ninguna .sev-dot { background:#b8b8b8; }
+
+  /* Heatmap */
+  .heatmap-wrap { overflow-x:auto; padding:var(--sp-1); margin:0 calc(-1 * var(--sp-1)); }
+  .heatmap { width:100%; border-collapse:separate; border-spacing:5px; margin-top:var(--sp-1); min-width:580px; }
+  .heatmap th { font-size:var(--t-xs); font-weight:700; color:var(--accent-deep); padding:var(--sp-2) var(--sp-3); text-align:center; background:var(--p-butter); border-radius:var(--r-sm); text-transform:uppercase; letter-spacing:0.4px; }
+  .heatmap th:first-child { background:transparent; text-align:left; }
+  .heatmap td.row-label { font-size:var(--t-sm); font-weight:600; color:var(--ink); padding:var(--sp-3) var(--sp-3); background:var(--bg); border-radius:var(--r-sm); white-space:nowrap; }
+  .heatmap td.row-label .alt { font-size:10px; color:var(--muted); font-weight:500; display:block; margin-top:2px; }
+  .heatmap td.hm-cell { text-align:center; padding:var(--sp-3) var(--sp-2); border-radius:var(--r-sm); font-size:var(--t-lg); font-weight:800; color:var(--accent-deep); cursor:pointer; transition:transform var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out); font-variant-numeric:tabular-nums; position:relative; }
+  .heatmap td.hm-cell:hover { transform:scale(1.07); box-shadow:var(--el-2); z-index:2; }
+  .heatmap td.hm-cell .lvl { display:block; font-size:9px; text-transform:uppercase; letter-spacing:0.5px; font-weight:700; margin-top:3px; opacity:0.7; }
+
+  /* Forecast */
+  .forecast-wrap { position:relative; height:340px; margin-top:var(--sp-2); }
+  .forecast-note { font-size:var(--t-xs); color:var(--muted); margin-top:var(--sp-2); padding-top:var(--sp-2); border-top:1px dashed var(--soft-line); line-height:1.5; }
+
+  /* Analytics de reportes */
+  .reports-analytics { display:grid; grid-template-columns:0.85fr 1.15fr 1.4fr; gap:var(--sp-3); margin-bottom:var(--sp-4); }
+  .analytics-card { background:linear-gradient(180deg, var(--bg) 0%, #ebf3ed 100%); border:1px solid var(--soft-line); border-radius:var(--r-md); padding:var(--sp-3) var(--sp-4); }
+  .analytics-card .ac-title { font-size:var(--t-xs); color:var(--muted); text-transform:uppercase; letter-spacing:0.5px; font-weight:700; margin-bottom:var(--sp-2); display:flex; align-items:center; gap:6px; }
+  .analytics-card .ac-title svg { width:14px; height:14px; color:var(--accent); }
+  .analytics-card canvas { width:100% !important; }
+  .ac-h-donut { height:150px; }
+  .ac-h-bars  { height:160px; }
+  .ac-h-line  { height:170px; }
+  @media (max-width:920px) { .reports-analytics { grid-template-columns:1fr; } }
+
+  .footnote { font-size:var(--t-sm); color:var(--muted); margin-top:var(--sp-5); padding:var(--sp-3) var(--sp-4); background:linear-gradient(135deg, var(--p-butter) 0%, #f6efd5 100%); border-radius:var(--r-md); line-height:1.55; border-left:3px solid var(--accent); }
+  @media (max-width:820px) { .top-grid,.data-panels { grid-template-columns:1fr; } .forecast-wrap { height:260px; } header { gap:var(--sp-2); } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="brand">
+    <div class="brand-icon">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="10" y="2" width="4" height="20" rx="1.2" fill="#fff" opacity="0.95"/>
+        <line x1="10" y1="6"  x2="14" y2="6"  stroke="#003e2a" stroke-width="1.2"/>
+        <line x1="10" y1="10" x2="14" y2="10" stroke="#003e2a" stroke-width="1.2"/>
+        <line x1="10" y1="14" x2="14" y2="14" stroke="#003e2a" stroke-width="1.2"/>
+        <line x1="10" y1="18" x2="14" y2="18" stroke="#003e2a" stroke-width="1.2"/>
+        <path d="M6 4 Q9 5 10 7" stroke="#fff" stroke-width="1.6" stroke-linecap="round" opacity="0.85" fill="none"/>
+        <path d="M18 4 Q15 5 14 7" stroke="#fff" stroke-width="1.6" stroke-linecap="round" opacity="0.85" fill="none"/>
+      </svg>
+    </div>
+    <div>
+      <h1>Agente Fitosanitario de la Caña</h1>
+      <div class="sub">Costa Rica · Monitoreo predictivo NASA POWER + Open-Meteo · Reglas LAICA / DIECA / CATIE</div>
+    </div>
+  </div>
+  <div class="header-status"><span class="status-dot"></span> Sistema activo</div>
+</header>
+
+<div class="data-bar" id="dataBar">Cargando...</div>
+
+<div class="top-grid">
+  <div class="map-panel">
+    <div class="panel-title">📍 Red de fincas <span class="hint">Toca una finca para ver su panel</span></div>
+    <div class="map-wrap">
+      <svg viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <filter id="landShadow" x="-5%" y="-5%" width="110%" height="110%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
+            <feOffset dx="2" dy="3" result="off"/>
+            <feComponentTransfer><feFuncA type="linear" slope="0.25"/></feComponentTransfer>
+            <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <linearGradient id="landGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#c8dec8"/>
+            <stop offset="100%" stop-color="#9cbf9e"/>
+          </linearGradient>
+          <linearGradient id="oceanGrad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#d6e6dc"/>
+            <stop offset="100%" stop-color="#bdd0c8"/>
+          </linearGradient>
+        </defs>
+        <rect width="800" height="500" fill="url(#oceanGrad)"/>
+        <text x="60" y="430" font-size="11" font-weight="600" fill="#5e8278" opacity="0.7" font-style="italic">Océano Pacífico</text>
+        <text x="660" y="80" font-size="11" font-weight="600" fill="#5e8278" opacity="0.7" font-style="italic">Mar Caribe</text>
+        <text x="220" y="50" font-size="10" fill="#5e8278" opacity="0.55">NICARAGUA</text>
+        <text x="640" y="465" font-size="10" fill="#5e8278" opacity="0.55">PANAMÁ</text>
+        <path d="M 646.6 257.9 L 645.8 260.6 L 643.3 263.5 L 639.6 266.3 L 634.8 268.3 L 623.1 262.4 L 611.6 255.6 L 605.3 258.7 L 602.9 267.5 L 598.6 272.0 L 593.3 273.7 L 591.1 276.7 L 590.7 306.2 L 591.1 334.1 L 599.8 334.7 L 614.3 344.4 L 620.4 350.1 L 622.4 355.3 L 620.6 357.9 L 610.0 364.0 L 599.7 371.6 L 594.5 381.2 L 603.6 396.7 L 605.5 407.2 L 605.2 418.2 L 602.7 423.5 L 582.6 436.2 L 578.2 440.6 L 578.8 443.8 L 589.9 452.5 L 595.1 461.0 L 599.5 471.2 L 600.1 480.0 L 590.0 463.6 L 576.2 448.0 L 564.1 438.3 L 563.2 415.9 L 558.3 403.7 L 540.1 392.4 L 524.5 384.6 L 513.0 386.2 L 520.1 399.1 L 538.4 415.7 L 539.6 422.0 L 539.3 430.5 L 526.7 429.2 L 515.6 425.7 L 502.1 424.7 L 493.1 419.6 L 474.0 399.8 L 487.6 382.9 L 491.8 371.8 L 491.4 348.9 L 488.3 337.7 L 473.6 320.8 L 450.2 302.2 L 417.4 287.0 L 402.0 274.7 L 363.6 265.3 L 349.0 259.1 L 337.6 247.5 L 335.9 239.3 L 339.9 226.5 L 329.3 210.3 L 283.6 178.4 L 258.0 166.6 L 252.5 159.7 L 248.5 157.6 L 252.4 179.6 L 263.6 192.9 L 292.8 205.3 L 300.8 212.5 L 304.0 221.8 L 287.1 239.8 L 278.5 244.4 L 275.9 254.1 L 270.4 257.1 L 264.6 251.5 L 240.9 223.3 L 195.1 209.8 L 186.8 201.5 L 169.8 175.8 L 162.0 152.4 L 164.8 136.7 L 183.6 112.3 L 189.4 101.7 L 188.3 95.2 L 188.9 85.6 L 181.9 78.8 L 164.4 70.1 L 153.4 63.1 L 156.4 59.6 L 176.3 50.1 L 177.6 41.6 L 177.5 38.8 L 180.8 38.2 L 183.7 35.9 L 185.4 33.6 L 190.9 25.4 L 195.6 20.7 L 201.1 20.0 L 207.8 23.4 L 233.0 32.2 L 260.9 42.1 L 300.7 56.0 L 317.2 47.1 L 331.4 40.2 L 341.2 41.2 L 362.6 49.2 L 375.5 51.7 L 383.4 50.9 L 397.1 62.6 L 404.5 71.3 L 405.8 77.2 L 409.9 80.3 L 420.6 81.0 L 446.7 87.0 L 462.6 85.8 L 477.1 79.5 L 485.1 72.0 L 487.6 60.2 L 491.2 66.0 L 495.5 75.2 L 497.4 87.1 L 516.2 126.7 L 531.1 148.9 L 563.9 189.3 L 578.1 196.7 L 602.0 229.2 L 610.2 234.6 L 615.0 244.2 L 639.8 252.1 L 646.6 257.9 Z" fill="url(#landGrad)" stroke="#5e8a64" stroke-width="1.5" stroke-linejoin="round" filter="url(#landShadow)"/>
+        <g opacity="0.45" stroke="#6e9670" stroke-width="14" stroke-linecap="round" fill="none">
+          <path d="M 200 130 Q 260 150, 330 180 Q 400 215, 470 260 Q 540 305, 590 360"/>
+        </g>
+        <text x="320" y="125" font-size="13" font-weight="700" fill="#003e2a" opacity="0.55" letter-spacing="2">COSTA RICA</text>
+        <g id="finca-markers"></g>
+      </svg>
+    </div>
+    <div class="map-legend">
+      <div class="lg"><span class="swatch" style="background:var(--p-min)"></span>Riesgo mínimo</div>
+      <div class="lg"><span class="swatch" style="background:var(--p-low)"></span>Riesgo bajo</div>
+      <div class="lg"><span class="swatch" style="background:var(--p-med)"></span>Riesgo medio</div>
+      <div class="lg"><span class="swatch" style="background:var(--p-high)"></span>Riesgo alto</div>
+    </div>
+  </div>
+
+  <div class="summary-panel">
+    <div class="panel-title">🌾 Finca seleccionada</div>
+    <div class="summary-zone-name" id="zoneName">—</div>
+    <div class="summary-coords" id="zoneCoords">—</div>
+    <div class="summary-line" id="summary">—</div>
+    <div class="quick-metrics" id="quickMetrics"></div>
+  </div>
+</div>
+
+<!-- Comparativa entre fincas -->
+<div class="section-card">
+  <h2>🗂️ Comparativa entre fincas — riesgo actual</h2>
+  <div class="heatmap-wrap"><table class="heatmap" id="heatmapTable"></table></div>
+  <div class="forecast-note">Cada celda muestra el score 0–100 de riesgo de la enfermedad en la finca. Toca una celda para abrir el panel detallado de esa finca.</div>
+</div>
+
+<!-- Tarjetas enfermedad -->
+<div class="grid-diseases" id="diseaseGrid"></div>
+
+<!-- Datos climáticos -->
+<div class="data-panels">
+  <div class="panel">
+    <div class="panel-h">📊 Condiciones últimas 24h <span class="source-tag">Open-Meteo</span></div>
+    <div id="openMeteoBox"></div>
+  </div>
+  <div class="panel">
+    <div class="panel-h">🛰️ Promedio últimos 7 días <span class="source-tag">NASA POWER</span></div>
+    <div id="nasaPowerBox"></div>
+  </div>
+</div>
+
+<!-- Alertas -->
+<div class="section-card">
+  <h2>🚨 Alertas activas</h2>
+  <div id="alertsBox"></div>
+</div>
+
+<!-- Pronóstico 7 días -->
+<div class="section-card">
+  <div class="reports-header">
+    <h2 style="margin:0">🔮 Pronóstico de riesgo — <span id="forecastZoneName" style="color:var(--muted);font-weight:500">—</span></h2>
+    <span style="font-size:11px;color:var(--muted)">Open-Meteo forecast horario, agregado por día</span>
+  </div>
+  <div class="forecast-wrap"><canvas id="forecastChart"></canvas></div>
+  <div class="forecast-note">Score 0–100 proyectado por enfermedad usando los mismos umbrales fitopatológicos sobre el pronóstico horario. Permite anticipar acciones preventivas antes de que las condiciones se den. Banda rosada = zona de riesgo alto (≥75), banda amarilla = riesgo medio (50–74).</div>
+</div>
+
+<!-- Reportes de campo -->
+<div class="section-card">
+  <div class="reports-header">
+    <h2 style="margin:0">📋 Reportes de campo — Monitoreadores</h2>
+    <div class="reports-filters" id="reportFilters">
+      <span class="pill active" data-filter="all">Todas las fincas</span>
+      <span class="pill" data-filter="guanacaste">Guanacaste</span>
+      <span class="pill" data-filter="grecia">Grecia</span>
+      <span class="pill" data-filter="turrialba">Turrialba</span>
+    </div>
+  </div>
+  <div class="reports-summary" id="reportsSummary"></div>
+
+  <div class="reports-analytics">
+    <div class="analytics-card">
+      <div class="ac-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 10 10"/></svg>
+        Distribución de severidad
+      </div>
+      <div class="ac-h-donut"><canvas id="chartSeverity"></canvas></div>
+    </div>
+    <div class="analytics-card">
+      <div class="ac-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="20" x2="21" y2="20"/><rect x="4" y="14" width="3" height="6"/><rect x="10" y="9" width="3" height="11"/><rect x="16" y="4" width="3" height="16"/></svg>
+        Reportes por patología
+      </div>
+      <div class="ac-h-bars"><canvas id="chartDisease"></canvas></div>
+    </div>
+    <div class="analytics-card">
+      <div class="ac-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/></svg>
+        Tendencia de incidencia (% promedio por día)
+      </div>
+      <div class="ac-h-line"><canvas id="chartTrend"></canvas></div>
+    </div>
+  </div>
+
+  <div id="reportsTable"></div>
+</div>
+
+<div class="footnote">
+  <b>Cómo lee este panel:</b> las condiciones climáticas se obtienen vía API desde Open-Meteo (datos horarios últimas 24h + forecast 7 días) y NASA POWER (promedios diarios últimos 7 días). El motor compara esas variables contra los umbrales fitopatológicos publicados para caña de azúcar y calcula un score 0–100 por enfermedad. Los reportes de campo se cargan desde el formulario que llenan los monitoreadores en sus rondas por los tablones y quedan registrados en la planilla maestra de la finca.
+</div>
+
+</div>
+
+<script>
+// ====== DATOS CLIMÁTICOS REALES ======
+const REAL_DATA = {"guanacaste":{"name":"Cañas — Guanacaste","lat":10.43,"lon":-85.09,"alt":95,"openmeteo":{"t_mean":25.6,"t_min":23.7,"t_max":30.6,"rh_mean":94.0,"rh_max":99,"precip_24h":31.9,"wet_hours_24h":19,"cloud_mean":97.0,"fetched_at":"2026-06-05T11:00"},"forecast":[{"date":"2026-06-05","t_mean":25.0,"t_min":24.4,"t_max":26.3,"rh_mean":95.0,"precip":22.2,"wet_h":12,"cloud":100.0},{"date":"2026-06-06","t_mean":25.3,"t_min":23.6,"t_max":30.0,"rh_mean":93.0,"precip":33.1,"wet_h":21,"cloud":94.0},{"date":"2026-06-07","t_mean":24.4,"t_min":23.0,"t_max":27.6,"rh_mean":94.0,"precip":35.5,"wet_h":21,"cloud":99.0},{"date":"2026-06-08","t_mean":24.1,"t_min":23.0,"t_max":25.6,"rh_mean":93.0,"precip":43.3,"wet_h":21,"cloud":100.0},{"date":"2026-06-09","t_mean":24.2,"t_min":22.4,"t_max":25.8,"rh_mean":95.0,"precip":33.5,"wet_h":24,"cloud":95.0}],"nasapower":{"t_mean_7d":26.7,"t_min_7d":24.2,"t_max_7d":30.7,"rh_mean_7d":87.2,"precip_7d_total":100.4,"gdd_7d_base15":70.0,"period":"20260526 → 20260602"}},"grecia":{"name":"Grecia — Alajuela","lat":10.07,"lon":-84.31,"alt":600,"openmeteo":{"t_mean":20.8,"t_min":18.7,"t_max":24.8,"rh_mean":92.0,"rh_max":100,"precip_24h":11.8,"wet_hours_24h":20,"cloud_mean":94.0,"fetched_at":"2026-06-05T11:00"},"forecast":[{"date":"2026-06-05","t_mean":20.7,"t_min":19.4,"t_max":23.8,"rh_mean":91.0,"precip":0.9,"wet_h":9,"cloud":99.0},{"date":"2026-06-06","t_mean":20.6,"t_min":18.6,"t_max":24.8,"rh_mean":91.0,"precip":19.3,"wet_h":17,"cloud":99.0},{"date":"2026-06-07","t_mean":19.7,"t_min":18.3,"t_max":21.4,"rh_mean":94.0,"precip":21.2,"wet_h":24,"cloud":99.0},{"date":"2026-06-08","t_mean":19.3,"t_min":18.4,"t_max":20.4,"rh_mean":92.0,"precip":5.6,"wet_h":19,"cloud":100.0},{"date":"2026-06-09","t_mean":19.4,"t_min":18.2,"t_max":20.3,"rh_mean":95.0,"precip":8.8,"wet_h":23,"cloud":99.0}],"nasapower":{"t_mean_7d":24.4,"t_min_7d":22.3,"t_max_7d":28.1,"rh_mean_7d":90.9,"precip_7d_total":265.3,"gdd_7d_base15":56.0,"period":"20260526 → 20260602"}},"turrialba":{"name":"Turrialba — Cartago","lat":9.9,"lon":-83.68,"alt":650,"openmeteo":{"t_mean":22.8,"t_min":20.6,"t_max":26.8,"rh_mean":92.0,"rh_max":99,"precip_24h":5.9,"wet_hours_24h":19,"cloud_mean":94.0,"fetched_at":"2026-06-05T11:00"},"forecast":[{"date":"2026-06-05","t_mean":23.2,"t_min":21.9,"t_max":26.0,"rh_mean":91.0,"precip":3.4,"wet_h":8,"cloud":100.0},{"date":"2026-06-06","t_mean":22.7,"t_min":20.8,"t_max":26.0,"rh_mean":92.0,"precip":2.8,"wet_h":18,"cloud":98.0},{"date":"2026-06-07","t_mean":22.7,"t_min":20.5,"t_max":25.7,"rh_mean":90.0,"precip":15.3,"wet_h":14,"cloud":99.0},{"date":"2026-06-08","t_mean":23.3,"t_min":21.0,"t_max":26.3,"rh_mean":88.0,"precip":4.2,"wet_h":14,"cloud":98.0},{"date":"2026-06-09","t_mean":21.8,"t_min":20.1,"t_max":27.0,"rh_mean":90.0,"precip":7.7,"wet_h":18,"cloud":100.0}],"nasapower":{"t_mean_7d":23.0,"t_min_7d":21.4,"t_max_7d":25.8,"rh_mean_7d":92.8,"precip_7d_total":235.5,"gdd_7d_base15":48.0,"period":"20260526 → 20260602"}},"_meta":{"fetched_at_utc":"2026-06-04T02:16:33.870571Z","sources":["NASA POWER","Open-Meteo (hourly + forecast 7d)"]}};
+
+// ====== REPORTES DE CAMPO ======
+const FIELD_REPORTS = [
+  { fecha:"2026-06-04", finca:"guanacaste", lote:"T-12", monitor:"Carlos Jiménez",  enfermedad:"Roya naranja",      incidencia:21, severidad:"Alta",   notas:"Pústulas anaranjadas en envés de hoja +3, variedad CR-7416. Recomendar aplicación de fungicida sistémico." },
+  { fecha:"2026-06-04", finca:"grecia",     lote:"L-04", monitor:"María Fernández", enfermedad:"Escaldadura foliar",incidencia:13, severidad:"Media",  notas:"Estrías cloróticas longitudinales en lote bajo regadío. Revisar fuente de semilla y desinfección de herramientas." },
+  { fecha:"2026-06-03", finca:"turrialba",  lote:"B-07", monitor:"José Ramírez",    enfermedad:"Roya marrón",       incidencia:9,  severidad:"Baja",   notas:"Pústulas marrón rojizas dispersas en variedad PR-67. Vigilancia semanal." },
+  { fecha:"2026-06-03", finca:"guanacaste", lote:"T-05", monitor:"Ana Solano",      enfermedad:"Roya naranja",      incidencia:18, severidad:"Alta",   notas:"Foco en zona baja con drenaje deficiente. Coordinar aplicación con plan operativo." },
+  { fecha:"2026-06-02", finca:"grecia",     lote:"L-09", monitor:"Esteban Mora",    enfermedad:"Mancha amarilla",   incidencia:7,  severidad:"Baja",   notas:"Lesiones cloróticas en hoja +1 y +2. Severidad baja, sin acción inmediata." },
+  { fecha:"2026-06-02", finca:"turrialba",  lote:"B-02", monitor:"Luisa Cordero",   enfermedad:"Ninguna",           incidencia:0,  severidad:"Ninguna",notas:"Inspección rutinaria sin hallazgos. Cultivo en buen estado vegetativo." },
+  { fecha:"2026-06-01", finca:"guanacaste", lote:"T-18", monitor:"José Ramírez",    enfermedad:"Barrenador tallo",  incidencia:11, severidad:"Media",  notas:"Galerías visibles en muestreo de 50 tallos. Liberar parasitoides Cotesia flavipes." },
+  { fecha:"2026-06-01", finca:"grecia",     lote:"L-01", monitor:"Carlos Jiménez",  enfermedad:"Roya marrón",       incidencia:14, severidad:"Media",  notas:"Avance moderado en variedad NA56-79. Monitorear progresión." },
+  { fecha:"2026-05-31", finca:"turrialba",  lote:"B-05", monitor:"María Fernández", enfermedad:"Roya marrón",       incidencia:24, severidad:"Alta",   notas:"Severidad creciente. Reportado a administración. Aplicar control inmediato." },
+  { fecha:"2026-05-31", finca:"guanacaste", lote:"T-09", monitor:"Luisa Cordero",   enfermedad:"Carbón",            incidencia:4,  severidad:"Baja",   notas:"Látigos negros aislados en zona soleada. Eliminar plantas afectadas." },
+  { fecha:"2026-05-30", finca:"grecia",     lote:"L-07", monitor:"Diana Castro",    enfermedad:"Escaldadura foliar",incidencia:16, severidad:"Alta",   notas:"Sospecha de transmisión por cosechadora. Desinfectar maquinaria." },
+  { fecha:"2026-05-30", finca:"turrialba",  lote:"B-09", monitor:"Ana Solano",      enfermedad:"Ninguna",           incidencia:0,  severidad:"Ninguna",notas:"Lote renovado en 2025, sin reportes. Crecimiento óptimo." },
+  { fecha:"2026-05-29", finca:"guanacaste", lote:"T-21", monitor:"Luisa Cordero",   enfermedad:"Roya naranja",      incidencia:8,  severidad:"Baja",   notas:"Focos aislados en perímetro. Vigilancia semanal recomendada." },
+  { fecha:"2026-05-29", finca:"grecia",     lote:"L-03", monitor:"Esteban Mora",    enfermedad:"Mancha amarilla",   incidencia:12, severidad:"Media",  notas:"Presente en lote sombreado. Asociado a alta humedad sostenida." },
+  { fecha:"2026-05-28", finca:"turrialba",  lote:"B-03", monitor:"Diana Castro",    enfermedad:"Barrenador tallo",  incidencia:7,  severidad:"Baja",   notas:"Muestreo bajo umbral económico. Continuar monitoreo con trampas." }
+];
+
+const ZONA_NOMBRES = { "guanacaste":"Guanacaste", "grecia":"Grecia", "turrialba":"Turrialba" };
+
+// Proyección equirectangular (Natural Earth ne_10m)
+const MAP_PROJ = { xmin:-85.908008, xmax:-82.563574, ymin:8.070654, ymax:11.189453, s:147.49267266021306, cx_offset:153.36024540215703, cy_offset:20.0 };
+function lonToX(lon) { return (lon - MAP_PROJ.xmin) * MAP_PROJ.s + MAP_PROJ.cx_offset; }
+function latToY(lat) { return (MAP_PROJ.ymax - lat) * MAP_PROJ.s + MAP_PROJ.cy_offset; }
+
+// ====== Reglas fitopatológicas — Caña de azúcar ======
+function calcRoyaNaranja(c)  { let s=0; if(c.rh_24h>85)s+=30; if(c.t_24h>=22&&c.t_24h<=28)s+=30; if(c.wet_h>=4)s+=25; if(c.alt<800)s+=15; return Math.min(s,100); }
+function calcRoyaMarron(c)   { let s=0; if(c.rh_24h>80)s+=30; if(c.t_24h>=20&&c.t_24h<=25)s+=30; if(c.wet_h>=6)s+=25; if(c.alt<1000)s+=15; return Math.min(s,100); }
+function calcCarbon(c)       { let s=0; if(c.t_24h>28)s+=30; if(c.rh_24h<70)s+=30; if(c.cloud<50)s+=20; if(c.alt<500)s+=20; return Math.min(s,100); }
+function calcEscaldadura(c)  { let s=0; if(c.rh_24h>85)s+=30; if(c.t_24h>=25&&c.t_24h<=30)s+=30; if(c.precip_24h>8)s+=25; if(c.wet_h>6)s+=15; return Math.min(s,100); }
+function calcBarrenador(c)   { let s=0; if(c.t_7d>24)s+=25; if(c.gdd>150)s+=35; if(c.gdd>250)s+=20; if(c.alt<800)s+=20; return Math.min(s,100); }
+
+const DISEASES = [
+  { id:"roya-naranja",  nombre:"Roya naranja",     sci:"Puccinia kuehnii",         fn:calcRoyaNaranja, whyFn:c=>`HR ${c.rh_24h}% · T ${c.t_24h}°C · hojas mojadas ${c.wet_h}h · ${c.alt} msnm` },
+  { id:"roya-marron",   nombre:"Roya marrón",      sci:"Puccinia melanocephala",   fn:calcRoyaMarron,  whyFn:c=>`HR ${c.rh_24h}% · T ${c.t_24h}°C · hojas mojadas ${c.wet_h}h · ${c.alt} msnm` },
+  { id:"carbon",        nombre:"Carbón",           sci:"Sporisorium scitamineum",  fn:calcCarbon,      whyFn:c=>`T ${c.t_24h}°C · HR ${c.rh_24h}% · nubosidad ${c.cloud}% · ${c.alt} msnm` },
+  { id:"escaldadura",   nombre:"Escaldadura foliar",sci:"Xanthomonas albilineans", fn:calcEscaldadura, whyFn:c=>`HR ${c.rh_24h}% · T ${c.t_24h}°C · lluvia 24h ${c.precip_24h}mm` },
+  { id:"barrenador",    nombre:"Barrenador tallo", sci:"Diatraea saccharalis",     fn:calcBarrenador,  whyFn:c=>`T media 7d ${c.t_7d}°C · grados-día acum. ${c.gdd}` }
+];
+
+function riskLevel(score) {
+  if (score >= 75) return { label:"ALTO",   color:"var(--p-high)", key:"high" };
+  if (score >= 50) return { label:"MEDIO",  color:"var(--p-med)",  key:"med"  };
+  if (score >= 30) return { label:"BAJO",   color:"var(--p-low)",  key:"low"  };
+  return            { label:"MÍNIMO", color:"var(--p-min)",  key:"low"  };
+}
+
+function pickContext(zonaKey) {
+  const z = REAL_DATA[zonaKey];
+  const om = z.openmeteo || {};
+  const np = z.nasapower || {};
+  return {
+    zonaName:z.name, alt:z.alt, lat:z.lat, lon:z.lon,
+    t_24h:om.t_mean, t_min_24h:om.t_min, t_max_24h:om.t_max,
+    rh_24h:om.rh_mean, rh_max_24h:om.rh_max,
+    precip_24h:om.precip_24h, wet_h:om.wet_hours_24h, cloud:om.cloud_mean,
+    om_time:om.fetched_at,
+    t_7d:np.t_mean_7d, t_min_7d:np.t_min_7d, t_max_7d:np.t_max_7d,
+    rh_7d:np.rh_mean_7d, precip_7d:np.precip_7d_total, gdd:np.gdd_7d_base15,
+    np_period:np.period
+  };
+}
+
+function buildForecastContext(zonaKey, dayData) {
+  const z = REAL_DATA[zonaKey];
+  return {
+    alt:z.alt,
+    t_24h:dayData.t_mean, rh_24h:dayData.rh_mean,
+    precip_24h:dayData.precip, wet_h:dayData.wet_h, cloud:dayData.cloud,
+    t_7d:dayData.t_mean,
+    gdd:(z.nasapower?.gdd_7d_base15 || 50)
+  };
+}
+
+function maxRiskScore(zonaKey) {
+  const c = pickContext(zonaKey);
+  return Math.max(...DISEASES.map(d => d.fn(c)));
+}
+
+// ====== Mapa ======
+function renderMap(selectedKey) {
+  const g = document.getElementById("finca-markers");
+  g.innerHTML = "";
+  Object.entries(REAL_DATA).forEach(([key, z]) => {
+    if (key.startsWith("_")) return;
+    const x = lonToX(z.lon), y = latToY(z.lat);
+    const score = maxRiskScore(key), level = riskLevel(score);
+    const isActive = key === selectedKey;
+    const marker = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    marker.setAttribute("class", "finca-dot" + (isActive ? " active" : ""));
+    marker.setAttribute("data-key", key);
+    const isHigh = level.key === "high";
+    marker.innerHTML = `
+      <circle class="dot-ring" cx="${x}" cy="${y}" r="20"/>
+      <circle class="dot-bg ${isHigh ? "pulse-high" : ""}" cx="${x}" cy="${y}" r="15" fill="${level.color}" stroke="#fff" stroke-width="2.5" filter="drop-shadow(0 2px 4px rgba(0,0,0,0.15))"/>
+      <text x="${x}" y="${y+4}" text-anchor="middle" font-size="12" font-weight="800" fill="#1e3932">${score}</text>
+      <text class="finca-label" x="${x}" y="${y+32}" text-anchor="middle">${ZONA_NOMBRES[key]}</text>
+    `;
+    marker.addEventListener("click", () => selectZone(key));
+    g.appendChild(marker);
+  });
+}
+
+// ====== Heatmap comparativo ======
+function renderHeatmap() {
+  const table = document.getElementById("heatmapTable");
+  const zonas = Object.keys(REAL_DATA).filter(k => !k.startsWith("_"));
+  let html = "<thead><tr><th></th>";
+  DISEASES.forEach(d => { html += `<th>${d.nombre}</th>`; });
+  html += "</tr></thead><tbody>";
+  zonas.forEach(zk => {
+    const c = pickContext(zk), z = REAL_DATA[zk];
+    html += `<tr><td class="row-label">${ZONA_NOMBRES[zk]}<span class="alt">${z.alt} msnm</span></td>`;
+    DISEASES.forEach(d => {
+      const score = d.fn(c), lvl = riskLevel(score);
+      html += `<td class="hm-cell" data-zone="${zk}" style="background:${lvl.color}">${score}<span class="lvl">${lvl.label}</span></td>`;
+    });
+    html += "</tr>";
+  });
+  html += "</tbody>";
+  table.innerHTML = html;
+  table.querySelectorAll(".hm-cell").forEach(c => {
+    c.addEventListener("click", () => {
+      selectZone(c.dataset.zone);
+      document.querySelector(".summary-panel").scrollIntoView({ behavior:"smooth", block:"start" });
+    });
+  });
+}
+
+// ====== Forecast chart ======
+let forecastChartInstance = null;
+function renderForecast() {
+  const zonaKey = currentZone, z = REAL_DATA[zonaKey], forecast = z.forecast || [];
+  document.getElementById("forecastZoneName").textContent = z.name;
+  if (!forecast.length) return;
+
+  const labels = forecast.map(d => new Date(d.date).toLocaleDateString("es-CR", { weekday:"short", day:"numeric", month:"short" }));
+  const palette = {
+    "roya-naranja":{ line:"#d47878" }, "roya-marron":{ line:"#a06b50" },
+    "carbon":      { line:"#5a5a5a" }, "escaldadura":{ line:"#c79844" },
+    "barrenador":  { line:"#5a8aa8" }
+  };
+  const datasets = DISEASES.map(d => ({
+    label:d.nombre,
+    data:forecast.map(day => d.fn(buildForecastContext(zonaKey, day))),
+    borderColor:palette[d.id].line,
+    backgroundColor:palette[d.id].line + "22",
+    fill:false, borderWidth:2.5, tension:0.35,
+    pointRadius:4, pointHoverRadius:6, pointBackgroundColor:palette[d.id].line
+  }));
+
+  const ctx = document.getElementById("forecastChart").getContext("2d");
+  if (forecastChartInstance) forecastChartInstance.destroy();
+  forecastChartInstance = new Chart(ctx, {
+    type:"line",
+    data:{ labels, datasets },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      interaction:{ mode:"index", intersect:false },
+      plugins:{
+        legend:{ position:"bottom", labels:{ boxWidth:12, boxHeight:12, padding:14, font:{ size:12, weight:"500" }, color:"#3d5a4e", usePointStyle:true, pointStyle:"circle" } },
+        tooltip:{
+          backgroundColor:"rgba(30,57,50,0.96)",
+          titleFont:{ weight:"700", size:13 },
+          bodyFont:{ size:12 },
+          padding:12, cornerRadius:8, displayColors:true, boxPadding:6,
+          callbacks:{ label:(ctx)=>` ${ctx.dataset.label}: ${ctx.parsed.y}/100` }
+        }
+      },
+      scales:{
+        y:{ min:0, max:100, ticks:{ color:"#8c7a66", font:{ size:11 } }, grid:{ color:"#f4ead8" },
+            title:{ display:true, text:"Score de riesgo (0–100)", color:"#8c7a66", font:{ size:11 } } },
+        x:{ ticks:{ color:"#8c7a66", font:{ size:11 } }, grid:{ display:false } }
+      }
+    },
+    plugins:[{
+      id:"riskZones",
+      beforeDatasetsDraw(chart) {
+        const { ctx, chartArea:{ left, right }, scales:{ y } } = chart;
+        ctx.fillStyle = "rgba(232,168,168,0.10)";
+        ctx.fillRect(left, y.getPixelForValue(100), right - left, y.getPixelForValue(75) - y.getPixelForValue(100));
+        ctx.fillStyle = "rgba(244,214,138,0.10)";
+        ctx.fillRect(left, y.getPixelForValue(75), right - left, y.getPixelForValue(50) - y.getPixelForValue(75));
+      }
+    }]
+  });
+}
+
+// ====== Render principal ======
+let currentZone = "guanacaste";
+function selectZone(key) {
+  currentZone = key;
+  // Sincroniza el filtro de reportes con la finca seleccionada
+  currentReportFilter = key;
+  document.querySelectorAll("#reportFilters .pill").forEach(x => {
+    x.classList.toggle("active", x.dataset.filter === key);
+  });
+  renderAll();
+  renderReports();
+}
+
+function renderAll() {
+  const zonaKey = currentZone;
+  const c = pickContext(zonaKey);
+  const meta = REAL_DATA._meta || {};
+
+  document.getElementById("dataBar").innerHTML = `📡 <b>Datos actualizados:</b> ${new Date(meta.fetched_at_utc).toLocaleString("es-CR")} · Fuentes: <code>NASA POWER</code> + <code>Open-Meteo</code> · Para refrescar: ejecutar <code>refresh_data.py</code>`;
+
+  renderMap(zonaKey);
+  renderHeatmap();
+
+  document.getElementById("zoneName").textContent = c.zonaName;
+  document.getElementById("zoneCoords").innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg> <span class="tabular">${c.lat}°N, ${c.lon}°W · ${c.alt} msnm</span>`;
+
+  const evals = DISEASES.map(d => ({ d, score:d.fn(c), level:riskLevel(d.fn(c)) }));
+  const altas = evals.filter(e => e.score >= 75);
+  const medias = evals.filter(e => e.score >= 50 && e.score < 75);
+  let parts = [];
+  if (altas.length) parts.push(`<strong>⚠️ Atención:</strong> ${altas.length} enfermedad(es) con riesgo ALTO — ${altas.map(a=>a.d.nombre).join(", ")}.`);
+  if (medias.length) parts.push(`Riesgo medio en: ${medias.map(a=>a.d.nombre).join(", ")}.`);
+  if (!parts.length) parts.push(`<strong>✅ Sin alertas críticas</strong> en las condiciones actuales.`);
+  document.getElementById("summary").innerHTML = parts.join(" ");
+
+  const ICON_TEMP = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 4v10.54a4 4 0 11-4 0V4a2 2 0 014 0z"/></svg>`;
+  const ICON_HUM  = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5C8 8 5 11.5 5 15a7 7 0 1014 0c0-3.5-3-7-7-12.5z"/></svg>`;
+  const ICON_RAIN = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 13v6m-4-8v8m-4-6v4"/><path d="M20 16.58A5 5 0 0018 7h-1.26A8 8 0 104 15.25"/></svg>`;
+  const ICON_LEAF = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 014 13V6h7a7 7 0 017 7v0a7 7 0 01-7 7zM4 6l16 16"/></svg>`;
+  document.getElementById("quickMetrics").innerHTML = `
+    <div class="qm"><div class="qm-head">${ICON_TEMP}<span class="lbl">Temperatura</span></div><div class="val">${c.t_24h}<span class="unit">°C</span></div></div>
+    <div class="qm"><div class="qm-head">${ICON_HUM}<span class="lbl">Humedad</span></div><div class="val">${c.rh_24h}<span class="unit">%</span></div></div>
+    <div class="qm"><div class="qm-head">${ICON_RAIN}<span class="lbl">Lluvia 24h</span></div><div class="val">${c.precip_24h}<span class="unit">mm</span></div></div>
+    <div class="qm"><div class="qm-head">${ICON_LEAF}<span class="lbl">Hojas mojadas</span></div><div class="val">${c.wet_h}<span class="unit">h</span></div></div>`;
+
+  const grid = document.getElementById("diseaseGrid");
+  grid.innerHTML = "";
+  evals.forEach(({ d, score, level }, i) => {
+    const div = document.createElement("div");
+    div.className = "disease-card anim-in";
+    div.style.setProperty("--risk-color", level.color);
+    div.style.animationDelay = (i * 40) + "ms";
+    div.innerHTML = `
+      <div class="card-head">
+        <div>
+          <h3>${d.nombre}</h3>
+          <div class="sci">${d.sci}</div>
+        </div>
+        <div class="score-num">${score}<span class="of">/100</span></div>
+      </div>
+      <span class="risk-badge">${level.label}</span>
+      <div class="risk-meter">
+        <div style="width:${score}%"></div>
+        <div class="threshold-marks"><span style="left:30%"></span><span style="left:50%"></span><span style="left:75%"></span></div>
+      </div>
+      <div class="why">${d.whyFn(c)}</div>`;
+    grid.appendChild(div);
+  });
+
+  document.getElementById("openMeteoBox").innerHTML = `
+    <div class="metric-row"><span>Temperatura media</span><span>${c.t_24h} °C</span></div>
+    <div class="metric-row"><span>Mín / Máx</span><span>${c.t_min_24h} / ${c.t_max_24h} °C</span></div>
+    <div class="metric-row"><span>Humedad relativa media</span><span>${c.rh_24h} %</span></div>
+    <div class="metric-row"><span>HR máxima</span><span>${c.rh_max_24h} %</span></div>
+    <div class="metric-row"><span>Precipitación 24h</span><span>${c.precip_24h} mm</span></div>
+    <div class="metric-row"><span>Horas con HR ≥90%</span><span>${c.wet_h} h</span></div>
+    <div class="metric-row"><span>Nubosidad media</span><span>${c.cloud} %</span></div>
+    <div class="metric-row"><span>Última hora del dato</span><span>${c.om_time}</span></div>`;
+
+  document.getElementById("nasaPowerBox").innerHTML = `
+    <div class="metric-row"><span>T media (7d)</span><span>${c.t_7d} °C</span></div>
+    <div class="metric-row"><span>T mín / máx (7d)</span><span>${c.t_min_7d} / ${c.t_max_7d} °C</span></div>
+    <div class="metric-row"><span>HR media (7d)</span><span>${c.rh_7d} %</span></div>
+    <div class="metric-row"><span>Lluvia acumulada 7d</span><span>${c.precip_7d} mm</span></div>
+    <div class="metric-row"><span>Grados-día (Tbase 15°C)</span><span>${c.gdd} GD</span></div>
+    <div class="metric-row"><span>Altitud</span><span>${c.alt} msnm</span></div>
+    <div class="metric-row"><span>Coordenadas</span><span>${c.lat}°, ${c.lon}°</span></div>
+    <div class="metric-row"><span>Periodo</span><span>${c.np_period}</span></div>`;
+
+  const alerts = document.getElementById("alertsBox");
+  alerts.innerHTML = "";
+  const ICON_HIGH = `<svg viewBox="0 0 24 24" fill="none" stroke="#c8372d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><circle cx="12" cy="17" r="0.8" fill="#c8372d"/></svg>`;
+  const ICON_MED  = `<svg viewBox="0 0 24 24" fill="none" stroke="#e89a1f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><circle cx="12" cy="16" r="0.8" fill="#e89a1f"/></svg>`;
+  const ICON_OK   = `<svg viewBox="0 0 24 24" fill="none" stroke="#4a8b2e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`;
+  evals.slice().sort((a,b) => b.score - a.score).forEach(({ d, score, level }) => {
+    if (score < 30) return;
+    const icon = level.key === "high" ? ICON_HIGH : level.key === "med" ? ICON_MED : ICON_OK;
+    const accion = level.key === "high"
+      ? "Aplicar protocolo de control inmediato y aumentar frecuencia de monitoreo en lotes susceptibles."
+      : level.key === "med" ? "Vigilancia activa. Preparar insumos preventivos." : "Sin acción urgente. Continuar monitoreo regular.";
+    const div = document.createElement("div");
+    div.className = "alert " + level.key;
+    div.innerHTML = `<div class="icon">${icon}</div><div class="body"><b>${d.nombre} — riesgo ${level.label} (${score}/100)</b>${d.whyFn(c)}. ${accion}</div>`;
+    alerts.appendChild(div);
+  });
+  if (!alerts.children.length) {
+    alerts.innerHTML = `<div class="alert low"><div class="icon">${ICON_OK}</div><div class="body"><b>Sin alertas activas</b>Las condiciones actuales están por debajo de los umbrales de riesgo.</div></div>`;
+  }
+
+  renderForecast();
+}
+
+// ====== Reportes ======
+let currentReportFilter = "all";
+function filteredReports() { return currentReportFilter === "all" ? FIELD_REPORTS : FIELD_REPORTS.filter(r => r.finca === currentReportFilter); }
+
+function renderReports() {
+  const rs = filteredReports();
+  const altas = rs.filter(r => r.severidad === "Alta").length;
+  const totalInc = rs.filter(r => r.incidencia > 0).length;
+  const monitores = new Set(rs.map(r => r.monitor)).size;
+  const lotes = new Set(rs.map(r => `${r.finca}-${r.lote}`)).size;
+  document.getElementById("reportsSummary").innerHTML = `
+    <div class="stat"><div class="num">${rs.length}</div><div class="lbl">Reportes</div></div>
+    <div class="stat"><div class="num">${altas}</div><div class="lbl">Severidad alta</div></div>
+    <div class="stat"><div class="num">${totalInc}</div><div class="lbl">Con incidencia</div></div>
+    <div class="stat"><div class="num">${monitores}</div><div class="lbl">Monitoreadores</div></div>
+    <div class="stat"><div class="num">${lotes}</div><div class="lbl">Lotes visitados</div></div>`;
+  const tableData = rs.map(r => [
+    r.fecha, ZONA_NOMBRES[r.finca], r.lote, r.monitor, r.enfermedad, r.incidencia + "%",
+    `<span class="sev-pill ${r.severidad.toLowerCase()}"><span class="sev-dot"></span>${r.severidad}</span>`, r.notas
+  ]);
+  const container = document.getElementById("reportsTable");
+  container.innerHTML = "";
+  new gridjs.Grid({
+    columns:[
+      { name:"Fecha", width:"95px" }, { name:"Finca", width:"110px" },
+      { name:"Lote", width:"70px" }, { name:"Monitoreador", width:"140px" },
+      { name:"Enfermedad", width:"130px" }, { name:"Incidencia", width:"85px" },
+      { name:"Severidad", width:"100px", formatter:(cell)=>gridjs.html(cell) },
+      { name:"Notas" }
+    ],
+    data:tableData, sort:true,
+    search:{ placeholder:"Buscar en reportes..." },
+    pagination:{ limit:8 }
+  }).render(container);
+
+  renderAnalyticsCharts(rs);
+}
+
+// ====== Gráficos analíticos de reportes ======
+let chartSeverityInst = null, chartDiseaseInst = null, chartTrendInst = null;
+
+function renderAnalyticsCharts(rs) {
+  const ink = "#1e3932", muted = "#5a7a6a", soft = "#e4efe6";
+
+  // 1) DONUT — distribución de severidad
+  const sevOrder = ["Alta", "Media", "Baja", "Ninguna"];
+  const sevColors = ["#e8a8a8", "#f0c97a", "#b8d4b0", "#cfd9d2"];
+  const sevCounts = sevOrder.map(s => rs.filter(r => r.severidad === s).length);
+  const sevCtx = document.getElementById("chartSeverity").getContext("2d");
+  if (chartSeverityInst) chartSeverityInst.destroy();
+  chartSeverityInst = new Chart(sevCtx, {
+    type:"doughnut",
+    data:{ labels: sevOrder, datasets:[{ data: sevCounts, backgroundColor: sevColors, borderColor:"#fff", borderWidth:2, hoverOffset:6 }] },
+    options:{
+      responsive:true, maintainAspectRatio:false, cutout:"62%",
+      plugins:{
+        legend:{ position:"right", labels:{ boxWidth:10, boxHeight:10, padding:8, font:{ size:11 }, color: ink, usePointStyle:true, pointStyle:"circle" } },
+        tooltip:{ backgroundColor:"rgba(30,57,50,0.96)", padding:10, cornerRadius:6, callbacks:{ label:(ctx)=>` ${ctx.label}: ${ctx.parsed} reporte(s)` } }
+      }
+    }
+  });
+
+  // 2) BARRAS HORIZONTALES — reportes por enfermedad (excluye "Ninguna")
+  const diseaseCount = {};
+  rs.filter(r => r.enfermedad !== "Ninguna").forEach(r => {
+    diseaseCount[r.enfermedad] = (diseaseCount[r.enfermedad] || 0) + 1;
+  });
+  const dEntries = Object.entries(diseaseCount).sort((a,b) => b[1] - a[1]);
+  const dLabels = dEntries.map(e => e[0]);
+  const dData   = dEntries.map(e => e[1]);
+  const palette = { "Roya naranja":"#d47878", "Roya marrón":"#a06b50", "Carbón":"#5a5a5a", "Escaldadura foliar":"#c79844", "Mancha amarilla":"#7da06a", "Barrenador tallo":"#5a8aa8" };
+  const dColors = dLabels.map(l => palette[l] || "#9aa89e");
+  const dCtx = document.getElementById("chartDisease").getContext("2d");
+  if (chartDiseaseInst) chartDiseaseInst.destroy();
+  chartDiseaseInst = new Chart(dCtx, {
+    type:"bar",
+    data:{ labels: dLabels, datasets:[{ label:"Reportes", data: dData, backgroundColor: dColors, borderRadius:6, barThickness:14 }] },
+    options:{
+      responsive:true, maintainAspectRatio:false, indexAxis:"y",
+      plugins:{
+        legend:{ display:false },
+        tooltip:{ backgroundColor:"rgba(30,57,50,0.96)", padding:10, cornerRadius:6, callbacks:{ label:(ctx)=>` ${ctx.parsed.x} reporte(s)` } }
+      },
+      scales:{
+        x:{ beginAtZero:true, ticks:{ stepSize:1, color: muted, font:{ size:10 } }, grid:{ color: soft } },
+        y:{ ticks:{ color: ink, font:{ size:11 } }, grid:{ display:false } }
+      }
+    }
+  });
+
+  // 3) LÍNEA — tendencia incidencia promedio por día
+  const byDate = {};
+  rs.forEach(r => {
+    if (!byDate[r.fecha]) byDate[r.fecha] = [];
+    if (r.incidencia > 0) byDate[r.fecha].push(r.incidencia);
+  });
+  const dates = Object.keys(byDate).sort();
+  const tLabels = dates.map(d => new Date(d).toLocaleDateString("es-CR", { day:"numeric", month:"short" }));
+  const tData = dates.map(d => byDate[d].length ? Math.round(byDate[d].reduce((a,b)=>a+b,0) / byDate[d].length) : 0);
+  const tCtx = document.getElementById("chartTrend").getContext("2d");
+  if (chartTrendInst) chartTrendInst.destroy();
+  chartTrendInst = new Chart(tCtx, {
+    type:"line",
+    data:{
+      labels: tLabels,
+      datasets:[{
+        label:"Incidencia %",
+        data: tData,
+        borderColor:"#006241",
+        backgroundColor:"rgba(0,98,65,0.12)",
+        fill:true, tension:0.35, borderWidth:2.5,
+        pointRadius:3.5, pointHoverRadius:5.5,
+        pointBackgroundColor:"#006241", pointBorderColor:"#fff", pointBorderWidth:1.5
+      }]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{
+        legend:{ display:false },
+        tooltip:{ backgroundColor:"rgba(30,57,50,0.96)", padding:10, cornerRadius:6, callbacks:{ label:(ctx)=>` Incidencia promedio: ${ctx.parsed.y}%` } }
+      },
+      scales:{
+        y:{ beginAtZero:true, ticks:{ color: muted, font:{ size:10 }, callback:(v)=>v+"%" }, grid:{ color: soft } },
+        x:{ ticks:{ color: muted, font:{ size:10 } }, grid:{ display:false } }
+      }
+    }
+  });
+}
+
+document.querySelectorAll("#reportFilters .pill").forEach(p => {
+  p.addEventListener("click", () => {
+    document.querySelectorAll("#reportFilters .pill").forEach(x => x.classList.remove("active"));
+    p.classList.add("active");
+    currentReportFilter = p.dataset.filter;
+    renderReports();
+  });
+});
+
+renderAll();
+renderReports();
+</script>
+</body>
+</html>
